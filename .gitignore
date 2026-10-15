@@ -1,0 +1,16 @@
+# данные (2 ГБ, качаются с Zenodo) — в git не кладём
+data/raw/
+data/cache/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+.pytest_cache/
+
+# ОС / редакторы
+.DS_Store
+.idea/
+.vscode/
