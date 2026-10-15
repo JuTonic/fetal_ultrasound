@@ -61,7 +61,9 @@ def preprocess(img: Image.Image, size: int = 224, train: bool = False,
     """PIL-изображение -> float32 [3, size, size], нормализованный ImageNet mean/std."""
     img = letterbox_square(img.convert("L"), size)
     if train:
-        cfg, rng = cfg or AugConfig(), rng or random
+        if rng is None:      # глобальный random не сидируется torch.manual_seed — воспроизводимость только явная
+            raise ValueError("train=True требует rng=random.Random(seed)")
+        cfg = cfg or AugConfig()
         img = _random_affine(img, cfg, rng)
         img = ImageEnhance.Brightness(img).enhance(1 + rng.uniform(-cfg.brightness, cfg.brightness))
         img = ImageEnhance.Contrast(img).enhance(1 + rng.uniform(-cfg.contrast, cfg.contrast))

@@ -1,8 +1,9 @@
-numpy
-pandas
-pillow
-scikit-learn
+# Проверено на Python 3.12 (macOS arm64); точные версии — results/env/pip-freeze_macos-arm64_py312.txt
+numpy>=2.0
+pandas>=2.2
+pillow>=10
+scikit-learn>=1.8      # StratifiedGroupKFold(shuffle=True) исправлен в 1.8; сами разбиения зафиксированы в CSV
 matplotlib
-torch
+torch>=2.4
 torchvision
 pytest

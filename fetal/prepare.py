@@ -13,11 +13,15 @@ from fetal import data, splits
 
 
 def changed_columns(old: pd.DataFrame, new: pd.DataFrame) -> dict[str, int]:
-    """Колонки уже записанной таблицы old, которые new меняет: {колонка: число строк}.
-    Строки сопоставляются по имени изображения; удалённая колонка считается целиком изменённой,
+    """Что пересборка new меняет в уже записанной таблице old: {колонка: число строк}.
+    Строки сопоставляются по имени изображения; добавленные/удалённые/повторяющиеся изображения
+    попадают в ключ "image", удалённая колонка считается целиком изменённой,
     новые колонки изменением не считаются."""
-    o = old.set_index("image").reindex(new["image"])
     diff = {}
+    n_set = len(set(old["image"]) ^ set(new["image"])) + int(new["image"].duplicated().sum())
+    if n_set:
+        diff["image"] = n_set
+    o = old.set_index("image").reindex(new["image"])
     for c in o.columns:
         if c not in new:
             diff[c] = len(old)
@@ -58,7 +62,7 @@ def main() -> None:
         sizes, cls, mach = splits.split_summary(meta, col)
         print(sizes.to_string()); print(cls.to_string()); print(mach.to_string())
 
-    assert all(v == 0 for v in splits.check_no_leakage(meta, "split_grouped").values()), "утечка в split_grouped"
+    splits.validate_splits(meta)          # полнота частей и нулевая утечка в grouped и official
     out = Path(args.out)
     table = meta.drop(columns=["path", "split_official_raw"])
     if out.exists() and not args.force:
@@ -71,7 +75,9 @@ def main() -> None:
                 "Запишите в другой файл (--out) или перезапишите осознанно (--force).")
     out.parent.mkdir(parents=True, exist_ok=True)
     table.to_csv(out, index=False)
-    print("\nзаписано:", out)
+    checksum = out.with_name("splits.sha256")
+    checksum.write_text(splits.splits_checksum(table) + "\n")
+    print("\nзаписано:", out, "| контрольная сумма разбиений:", checksum)
 
 
 if __name__ == "__main__":

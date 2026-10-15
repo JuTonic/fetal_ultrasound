@@ -101,6 +101,29 @@ def check_no_leakage(meta: pd.DataFrame, split_col: str) -> dict:
     return res
 
 
+def validate_splits(meta: pd.DataFrame) -> None:
+    """Перед записью таблицы: у каждого изображения одна из частей, части непусты, изображения
+    уникальны, а в split_grouped и split_official нет утечки по пациентам/группам/картинкам."""
+    assert meta["image"].is_unique, "повторяющиеся имена изображений"
+    for col in ("split_grouped", "split_official", "split_naive"):
+        assert set(meta[col].unique()) == set(SPLITS), f"{col}: ожидались части {SPLITS}, есть {set(meta[col].unique())}"
+    for col in ("split_grouped", "split_official"):
+        leak = check_no_leakage(meta, col)
+        assert all(v == 0 for v in leak.values()), f"утечка в {col}: {leak}"
+
+
+SPLIT_COLS = ("split_grouped", "split_official", "split_naive")
+
+
+def splits_checksum(meta: pd.DataFrame) -> str:
+    """SHA-256 соответствия image -> часть по всем трём разбиениям (порядок строк и остальные
+    колонки не важны). Это «паспорт» протокола: разбиения воспроизводятся только из самого CSV,
+    а не из seed и версий библиотек."""
+    import hashlib
+    t = meta[["image", *SPLIT_COLS]].sort_values("image")
+    return hashlib.sha256(t.to_csv(index=False).encode()).hexdigest()
+
+
 def split_summary(meta: pd.DataFrame, split_col: str) -> pd.DataFrame:
     """Размеры частей, число пациентов и доли классов/сканеров (в %)."""
     rows = {}

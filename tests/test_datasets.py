@@ -19,9 +19,9 @@ def _ds(part="train", train=True, n=24, **kw):
                               train=train, **kw)
 
 
-def _epoch(ds, seed, workers):
+def _epoch(ds, seed, workers, shuffle=False):
     torch.manual_seed(seed)
-    return list(make_loader(ds, batch_size=8, shuffle=True, num_workers=workers))
+    return list(make_loader(ds, batch_size=8, shuffle=shuffle, num_workers=workers))
 
 
 @pytest.mark.parametrize("workers", [0, 2])
@@ -32,13 +32,26 @@ def test_loader_batch_shape_dtype_labels(workers):
     assert y.dtype == torch.int64 and y.tolist() == ds.df.label.head(8).tolist()
 
 
+def _same(p, q):
+    return all(torch.equal(x1, x2) and torch.equal(y1, y2) for (x1, y1), (x2, y2) in zip(p, q))
+
+
 @pytest.mark.parametrize("workers", [0, 2])
-def test_augmentation_reproducible_with_seed(workers):
+@pytest.mark.parametrize("shuffle", [False, True])
+def test_augmentation_reproducible_with_seed(workers, shuffle):
     ds = _ds()
-    a, b, c = _epoch(ds, 0, workers), _epoch(ds, 0, workers), _epoch(ds, 1, workers)
-    same = lambda p, q: all(torch.equal(x1, x2) and torch.equal(y1, y2) for (x1, y1), (x2, y2) in zip(p, q))
-    assert same(a, b), "тот же seed должен давать те же батчи"
-    assert not same(a, c), "другой seed должен давать другие батчи"
+    a, b, c = (_epoch(ds, sd, workers, shuffle) for sd in (0, 0, 1))
+    assert _same(a, b), "тот же seed должен давать те же батчи"
+    assert not _same(a, c), "другой seed должен давать другие батчи"
+
+
+@pytest.mark.parametrize("workers", [0, 2])
+def test_seed_changes_pixels_not_just_order(workers):
+    """shuffle=False: порядок картинок фиксирован, значит различия между seed — только от аугментаций."""
+    ds = _ds()
+    a, c = _epoch(ds, 0, workers), _epoch(ds, 1, workers)
+    assert all(torch.equal(y1, y2) for (_, y1), (_, y2) in zip(a, c))      # порядок меток тот же
+    assert not any(torch.equal(x1, x2) for (x1, _), (x2, _) in zip(a, c))  # а пиксели разные
 
 
 def test_eval_is_deterministic_and_size_param():
