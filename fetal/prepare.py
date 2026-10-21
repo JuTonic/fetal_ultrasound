@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from fetal import data, splits
+from fetal import data, splits, subsets
 
 
 def changed_columns(old: pd.DataFrame, new: pd.DataFrame) -> dict[str, int]:
@@ -55,6 +55,7 @@ def main() -> None:
     meta["split_grouped"], seed, score = splits.best_grouped_split(meta, range(args.seeds))
     meta["split_official"] = splits.official_split_with_val(meta)
     meta["split_naive"] = splits.naive_image_split(meta)
+    meta = subsets.add_subset_columns(meta)            # вложенные подвыборки train 25 / 50 % для п. (e)
     print(f"\nsplit_grouped: seed={seed}, imbalance_score={score:.4f}")
 
     for col in ("split_grouped", "split_official", "split_naive"):
@@ -63,6 +64,7 @@ def main() -> None:
         print(sizes.to_string()); print(cls.to_string()); print(mach.to_string())
 
     splits.validate_splits(meta)          # полнота частей и нулевая утечка в grouped и official
+    subsets.validate_subsets(meta)        # вложенность, val/test без изменений, группы целиком, баланс классов
     out = Path(args.out)
     table = meta.drop(columns=["path", "split_official_raw"])
     if out.exists() and not args.force:
@@ -77,6 +79,7 @@ def main() -> None:
     table.to_csv(out, index=False)
     checksum = out.with_name("splits.sha256")
     checksum.write_text(splits.splits_checksum(table) + "\n")
+    out.with_name("subsets.sha256").write_text(subsets.subsets_checksum(table) + "\n")
     print("\nзаписано:", out, "| контрольная сумма разбиений:", checksum)
 
 

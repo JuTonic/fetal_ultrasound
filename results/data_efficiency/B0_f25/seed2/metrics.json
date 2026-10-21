@@ -1,0 +1,64 @@
+{
+  "n": 1770,
+  "accuracy": 0.8813559322033898,
+  "macro_f1": 0.7830125554142736,
+  "balanced_accuracy": 0.7675237938625528,
+  "f1_per_class": {
+    "Other": 0.9159034138218152,
+    "Fetal thorax": 0.9202453987730062,
+    "Brain: TT": 0.8136882129277566,
+    "Maternal cervix": 0.9978586723768736,
+    "Fetal femur": 0.8378378378378378,
+    "Brain: TC": 0.7582417582417582,
+    "Fetal abdomen": 0.896551724137931,
+    "Brain: TV": 0.6845637583892618,
+    "Brain: other": 0.2222222222222222
+  },
+  "f1_brain": {
+    "Brain: TT": 0.8136882129277566,
+    "Brain: TC": 0.7582417582417582,
+    "Brain: TV": 0.6845637583892618,
+    "Brain: other": 0.2222222222222222
+  },
+  "per_machine": {
+    "Aloka": {
+      "n": 705,
+      "classes_present": 9,
+      "macro_f1": 0.8661443507199045,
+      "balanced_accuracy": 0.8497009991140828
+    },
+    "Other": {
+      "n": 61,
+      "classes_present": 9,
+      "macro_f1": 0.6132829943571632,
+      "balanced_accuracy": 0.611904761904762
+    },
+    "Voluson E6": {
+      "n": 849,
+      "classes_present": 9,
+      "macro_f1": 0.7624969633782568,
+      "balanced_accuracy": 0.7459276600870944
+    },
+    "Voluson S10": {
+      "n": 155,
+      "classes_present": 9,
+      "macro_f1": 0.6669404147517503,
+      "balanced_accuracy": 0.6623821025994939
+    }
+  },
+  "per_subset": {
+    "class_pure_formats": {
+      "n": 171,
+      "classes_present": 2,
+      "macro_f1": 1.0,
+      "balanced_accuracy": 1.0
+    },
+    "mixed_formats": {
+      "n": 1599,
+      "classes_present": 9,
+      "macro_f1": 0.7799824133204323,
+      "balanced_accuracy": 0.7644983113029604
+    }
+  },
+  "n_val_groups": 259
+}

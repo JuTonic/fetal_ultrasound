@@ -1,0 +1,20 @@
+{
+  "arch": "resnet18",
+  "pretrained": true,
+  "seed": 1,
+  "region": "full",
+  "size": 224,
+  "hflip": false,
+  "aug": "moderate",
+  "epochs": 6,
+  "batch_size": 64,
+  "lr": 0.0003,
+  "weight_decay": 0.0001,
+  "split_col": "split_grouped_f25",
+  "num_workers": 8,
+  "meta_file": "data/processed/metadata.csv",
+  "raw_dir": "data/raw",
+  "sector_file": "data/cache/sector.csv",
+  "overlay_file": "data/cache/overlay_masks.npz",
+  "variant": "B0_f25"
+}

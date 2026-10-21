@@ -1,0 +1,1 @@
+2026-10-21 22:52:06 caffeinate -i .venv/bin/python -u -B -m fetal.train --config configs/data_efficiency.json --all --seed 0 1 2 --out results/data_efficiency
