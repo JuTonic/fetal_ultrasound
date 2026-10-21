@@ -107,6 +107,46 @@ def sizes_overview(meta, out_dir: Path, size: int) -> Path:
     return p
 
 
+def class_imbalance(meta: pd.DataFrame, out_dir: Path) -> tuple[pd.DataFrame, Path]:
+    """Таблица (class_imbalance.csv) и график дисбаланса 9 классов: число кадров, доля, доли в train/val/test split_grouped."""
+    SURFACE, INK, INK2, MUTED, BAR = "#fcfcfb", "#0b0b0b", "#52514e", "#8a8984", "#2a78d6"
+    by = pd.crosstab(meta.cls9, meta.split_grouped).reindex(columns=["train", "val", "test"])
+    t = pd.DataFrame({"всего": by.sum(axis=1)})
+    t["доля, %"] = (100 * t["всего"] / len(meta)).round(1)
+    t = t.join(by).sort_values("всего", ascending=False)
+    t["во сколько раз реже самого частого"] = (t["всего"].iloc[0] / t["всего"]).round(1)
+    for part in ("train", "val", "test"):
+        t[f"доля в {part}, %"] = (100 * t[part] / t[part].sum()).round(1)
+    t.index.name = "класс"
+    t.to_csv(out_dir / "class_imbalance.csv", encoding="utf-8-sig")
+    ratio, even = t["всего"].iloc[0] / t["всего"].iloc[-1], len(meta) / len(t)
+    fig, ax = plt.subplots(figsize=(9, 5.0), dpi=150, facecolor=SURFACE)
+    ax.set_facecolor(SURFACE)
+    ax.barh(range(len(t)), t["всего"], height=0.55, color=BAR, zorder=3)
+    ax.axvline(even, color=MUTED, lw=1, ls=(0, (4, 3)), zorder=2)
+    ax.text(even + 40, len(t) - 0.35, f"поровну: {even:,.0f}".replace(",", " "), color=MUTED, fontsize=8.5, va="center")
+    for i, (n, pc) in enumerate(zip(t["всего"], t["доля, %"])):
+        ax.text(n + 40, i, f"{n:,}".replace(",", " ") + f"  ·  {pc:.1f} %".replace(".", ","), va="center", fontsize=9.5, color=INK,
+                zorder=4, bbox=dict(facecolor=SURFACE, edgecolor="none", pad=1.5))
+    ax.set_yticks(range(len(t)), t.index, fontsize=10, color=INK)
+    ax.invert_yaxis()
+    ax.set_xlim(0, t["всего"].max() * 1.22)
+    ax.xaxis.set_visible(False)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    ax.tick_params(axis="y", length=0)
+    fig.text(0.02, 0.955, "Дисбаланс классов в FETAL_PLANES_DB", fontsize=13.5, fontweight="bold", color=INK, ha="left")
+    fig.text(0.02, 0.905, f"Самый частый класс ({t.index[0]}) встречается в {ratio:.1f} раза чаще самого редкого ({t.index[-1]});".replace(".", ",")
+             + f" всего {len(meta):,} кадров в 9 классах".replace(",", " "), fontsize=9.5, color=INK2, ha="left")
+    fig.text(0.02, 0.02, "Доли классов в train, val и test почти одинаковы (разбиение по пациентам со стратификацией), см. таблицу.",
+             fontsize=8.5, color=MUTED, ha="left")
+    fig.subplots_adjust(left=0.17, right=0.98, top=0.86, bottom=0.08)
+    path = out_dir / "class_imbalance.png"
+    fig.savefig(path, facecolor=SURFACE)
+    plt.close(fig)
+    return t, path
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--meta", default="data/processed/metadata.csv")
@@ -119,7 +159,8 @@ def main() -> None:
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
     raw = Path(args.raw)
     paths = before_after_by_machine(meta, raw, out, args.size, args.seed)
-    paths += [augmentation_examples(meta, raw, out, args.size, args.seed), sizes_overview(meta, out, args.size)]
+    paths += [augmentation_examples(meta, raw, out, args.size, args.seed), sizes_overview(meta, out, args.size),
+              class_imbalance(meta, out)[1]]
     print("\n".join(str(p) for p in paths))
 
 

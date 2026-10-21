@@ -1,0 +1,32 @@
+{
+  "_comment": "Контроль к кривой (e): 25 и 50 % обучающих пациентов при том же числе шагов оптимизации, что у 100 % при 6 эпохах (138 шагов x 6 = 828): 25 % -> 24 эпохи (34 x 24 = 816), 50 % -> 12 эпох (69 x 12 = 828). Остальное как у B0.",
+  "base": {
+    "arch": "resnet18",
+    "pretrained": true,
+    "seed": 0,
+    "region": "full",
+    "size": 224,
+    "hflip": false,
+    "aug": "moderate",
+    "epochs": 6,
+    "batch_size": 64,
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "split_col": "split_grouped",
+    "num_workers": 8,
+    "meta_file": "data/processed/metadata.csv",
+    "raw_dir": "data/raw",
+    "sector_file": "data/cache/sector.csv",
+    "overlay_file": "data/cache/overlay_masks.npz"
+  },
+  "variants": {
+    "B0_f25_eqsteps": {
+      "split_col": "split_grouped_f25",
+      "epochs": 24
+    },
+    "B0_f50_eqsteps": {
+      "split_col": "split_grouped_f50",
+      "epochs": 12
+    }
+  }
+}

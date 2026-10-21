@@ -1,0 +1,1 @@
+2026-10-21 23:16:16 caffeinate -i .venv/bin/python -u -B -m fetal.train --config configs/data_efficiency_equal_steps.json --variant B0_f25_eqsteps --seed 0 --out results/data_efficiency_eqsteps

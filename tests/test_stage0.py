@@ -281,3 +281,14 @@ def test_plot_deltas_writes_png(tmp_path):
     out = tmp_path / "d.png"
     report.plot_deltas(report.deltas(tmp_path, "B0", n_boot=100), out)
     assert out.stat().st_size > 5000 and out.read_bytes()[:4] == b"\x89PNG"
+
+
+def test_class_imbalance_figure_and_table(tmp_path):
+    from fetal import figures
+    rng = np.random.default_rng(0)
+    meta = pd.DataFrame({"cls9": rng.choice(["Other", "Fetal thorax", "Brain: TT", "Brain: other"], 300, p=[.5, .25, .2, .05])})
+    meta["split_grouped"] = np.where(meta.index % 7 == 0, "val", np.where(meta.index % 7 == 1, "test", "train"))
+    t, png = figures.class_imbalance(meta, tmp_path)
+    assert png.read_bytes()[:4] == b"\x89PNG" and (tmp_path / "class_imbalance.csv").exists()
+    assert t["всего"].is_monotonic_decreasing and t["всего"].sum() == len(meta) and t["доля, %"].sum() == pytest.approx(100, abs=0.5)
+    assert t["во сколько раз реже самого частого"].iloc[0] == 1.0
