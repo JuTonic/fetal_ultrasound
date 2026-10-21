@@ -1,0 +1,170 @@
+{
+  "metric": "macro_f1",
+  "rule": "средняя Δ >= 1 п.п. и нижняя граница 95%-го интервала > 0 (парный бутстрэп по patient_group)",
+  "n_comparisons": 7,
+  "base": "B0",
+  "parameters": {
+    "region": {
+      "chosen": "full",
+      "from": "B0",
+      "reason": "ни один вариант не прошёл правило: значение базы (A1_crop, A2_ui, A3_crop_ui)"
+    },
+    "size": {
+      "chosen": 224,
+      "from": "B0",
+      "reason": "ни один вариант не прошёл правило: значение базы (R320)"
+    },
+    "hflip": {
+      "chosen": false,
+      "from": "B0",
+      "reason": "ни один вариант не прошёл правило: значение базы (HF_on)"
+    },
+    "aug": {
+      "chosen": "moderate",
+      "from": "B0",
+      "reason": "ни один вариант не прошёл правило: значение базы (AUG_none, AUG_strong)"
+    }
+  },
+  "final_config": {
+    "arch": "resnet18",
+    "pretrained": true,
+    "seed": 0,
+    "region": "full",
+    "size": 224,
+    "hflip": false,
+    "aug": "moderate",
+    "epochs": 6,
+    "batch_size": 64,
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "split_col": "split_grouped",
+    "num_workers": 8,
+    "meta_file": "data/processed/metadata.csv",
+    "raw_dir": "data/raw",
+    "sector_file": "data/cache/sector.csv",
+    "overlay_file": "data/cache/overlay_masks.npz"
+  },
+  "changed_vs_base": {},
+  "final_equals_base": true,
+  "variants": {
+    "A1_crop": {
+      "delta_pp": 0.13,
+      "ci95_pp": [
+        -1.18,
+        1.43
+      ],
+      "ci_adj_pp": [
+        -1.71,
+        2.08
+      ],
+      "per_seed_delta_pp": [
+        0.44,
+        0.61,
+        -0.65
+      ],
+      "decision": "различий не видно"
+    },
+    "A2_ui": {
+      "delta_pp": 0.27,
+      "ci95_pp": [
+        -0.92,
+        1.54
+      ],
+      "ci_adj_pp": [
+        -1.32,
+        2.18
+      ],
+      "per_seed_delta_pp": [
+        -0.91,
+        -0.18,
+        1.88
+      ],
+      "decision": "различий не видно"
+    },
+    "A3_crop_ui": {
+      "delta_pp": 1.28,
+      "ci95_pp": [
+        -0.05,
+        2.82
+      ],
+      "ci_adj_pp": [
+        -0.43,
+        3.61
+      ],
+      "per_seed_delta_pp": [
+        1.4,
+        0.24,
+        2.21
+      ],
+      "decision": "различий не видно"
+    },
+    "AUG_none": {
+      "delta_pp": -0.98,
+      "ci95_pp": [
+        -2.68,
+        0.69
+      ],
+      "ci_adj_pp": [
+        -3.27,
+        1.44
+      ],
+      "per_seed_delta_pp": [
+        -1.28,
+        -0.66,
+        -0.99
+      ],
+      "decision": "различий не видно"
+    },
+    "AUG_strong": {
+      "delta_pp": 0.09,
+      "ci95_pp": [
+        -1.48,
+        1.37
+      ],
+      "ci_adj_pp": [
+        -2.35,
+        1.83
+      ],
+      "per_seed_delta_pp": [
+        0.13,
+        -0.35,
+        0.49
+      ],
+      "decision": "различий не видно"
+    },
+    "HF_on": {
+      "delta_pp": 0.19,
+      "ci95_pp": [
+        -1.34,
+        1.75
+      ],
+      "ci_adj_pp": [
+        -1.94,
+        2.5
+      ],
+      "per_seed_delta_pp": [
+        1.22,
+        -0.94,
+        0.29
+      ],
+      "decision": "различий не видно"
+    },
+    "R320": {
+      "delta_pp": 0.63,
+      "ci95_pp": [
+        -1.05,
+        2.2
+      ],
+      "ci_adj_pp": [
+        -1.6,
+        2.79
+      ],
+      "per_seed_delta_pp": [
+        0.93,
+        -0.36,
+        1.31
+      ],
+      "decision": "различий не видно"
+    }
+  }
+}

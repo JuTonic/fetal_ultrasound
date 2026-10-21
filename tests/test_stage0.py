@@ -242,3 +242,42 @@ def test_report_refuses_to_pair_runs_on_different_val_images(tmp_path):
     np.savez_compressed(tmp_path / "X" / "seed0" / "val_pred.npz", **z)
     with pytest.raises(AssertionError):
         report.summarize(tmp_path, "B0", n_boot=50)
+
+
+def _fake_ablation(tmp_path):
+    """B0 и два варианта (A2_ui реально лучше, HF_on = шум) на 3 seed + конфиг с одним параметром на вариант."""
+    y, base, groups = _toy(n_groups=150)
+    rng = np.random.default_rng(3)
+    better = [np.where((p != y) & (rng.random(len(y)) < 0.6), y, p) for p in base]
+    noise = [np.where(rng.random(len(y)) < 0.02, rng.integers(0, 9, len(y)), p) for p in base]
+    machine = np.array(["Aloka"] * len(y))
+    for s in range(3):
+        _fake_run(tmp_path, "B0", s, y, groups, machine, base[s])
+        _fake_run(tmp_path, "A2_ui", s, y, groups, machine, better[s])
+        _fake_run(tmp_path, "HF_on", s, y, groups, machine, noise[s])
+    cfg = tmp_path / "cfg.json"
+    cfg.write_text(json.dumps({"base": {"region": "full", "hflip": False, "size": 224},
+                               "variants": {"B0": {}, "A2_ui": {"region": "ui"}, "HF_on": {"hflip": True}}}))
+    return cfg
+
+
+def test_decide_applies_rule_per_parameter_and_keeps_base_otherwise(tmp_path):
+    from fetal import report
+    cfg = _fake_ablation(tmp_path)
+    d = report.deltas(tmp_path, "B0", n_boot=300)
+    dec = report.decide(d, cfg, "B0")
+    assert dec["final_config"] == {"region": "ui", "hflip": False, "size": 224}          # прошёл только A2_ui
+    assert dec["changed_vs_base"] == {"region": "ui"} and not dec["final_equals_base"]
+    assert dec["parameters"]["hflip"]["from"] == "B0" and "ни один" in dec["parameters"]["hflip"]["reason"]
+    assert dec["variants"]["A2_ui"]["decision"].startswith("лучше") and dec["n_comparisons"] == 2
+    (tmp_path / "A2_ui").rename(tmp_path / "A2_hidden")                                  # без прошедших вариантов -> база
+    d2 = report.deltas(tmp_path, "B0", n_boot=200)
+    assert report.decide(d2, cfg, "B0")["final_equals_base"]
+
+
+def test_plot_deltas_writes_png(tmp_path):
+    from fetal import report
+    _fake_ablation(tmp_path)
+    out = tmp_path / "d.png"
+    report.plot_deltas(report.deltas(tmp_path, "B0", n_boot=100), out)
+    assert out.stat().st_size > 5000 and out.read_bytes()[:4] == b"\x89PNG"
