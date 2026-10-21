@@ -1,0 +1,102 @@
+{
+  "chance_macro_f1_classes": 0.111,
+  "chance_balanced_acc_machine_4": 0.25,
+  "sector_ok_share": 0.9994,
+  "n_sector_not_ok": 7,
+  "ui_mask_coverage_of_frames": 0.9791,
+  "box_is_whole_frame_share": 0.894,
+  "class_from": {
+    "aspect": {
+      "macro_f1": 0.207,
+      "balanced_accuracy": 0.238
+    },
+    "width_height": {
+      "macro_f1": 0.206,
+      "balanced_accuracy": 0.237
+    },
+    "sector_geometry": {
+      "macro_f1": 0.272,
+      "balanced_accuracy": 0.286
+    },
+    "ui_mask_flag_and_fraction": {
+      "macro_f1": 0.208,
+      "balanced_accuracy": 0.241
+    },
+    "sector_geometry+aspect+ui_mask": {
+      "macro_f1": 0.283,
+      "balanced_accuracy": 0.298
+    }
+  },
+  "machine_from": {
+    "aspect": {
+      "macro_f1": 0.784,
+      "balanced_accuracy": 0.785
+    },
+    "width_height": {
+      "macro_f1": 0.771,
+      "balanced_accuracy": 0.778
+    },
+    "sector_geometry": {
+      "macro_f1": 0.839,
+      "balanced_accuracy": 0.831
+    },
+    "ui_mask_flag_and_fraction": {
+      "macro_f1": 0.957,
+      "balanced_accuracy": 0.98
+    },
+    "sector_geometry+aspect+ui_mask": {
+      "macro_f1": 0.986,
+      "balanced_accuracy": 0.989
+    }
+  },
+  "class_pure_formats": {
+    "formats_with_>=min_frames": 14,
+    "class_pure_formats": 7,
+    "frames_in_class_pure_formats": 1496,
+    "share_of_all_frames": 0.121,
+    "list": [
+      {
+        "format": "Aloka|692x480",
+        "n": 393,
+        "top_class": "Other",
+        "share": 1.0
+      },
+      {
+        "format": "Aloka|768x519",
+        "n": 250,
+        "top_class": "Other",
+        "share": 1.0
+      },
+      {
+        "format": "Aloka|647x381",
+        "n": 235,
+        "top_class": "Other",
+        "share": 1.0
+      },
+      {
+        "format": "Aloka|869x601",
+        "n": 191,
+        "top_class": "Maternal cervix",
+        "share": 1.0
+      },
+      {
+        "format": "Aloka|384x259",
+        "n": 182,
+        "top_class": "Other",
+        "share": 1.0
+      },
+      {
+        "format": "Aloka|745x559",
+        "n": 138,
+        "top_class": "Maternal cervix",
+        "share": 1.0
+      },
+      {
+        "format": "Aloka|753x567",
+        "n": 107,
+        "top_class": "Maternal cervix",
+        "share": 1.0
+      }
+    ]
+  }
+}

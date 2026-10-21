@@ -10,6 +10,7 @@ import torch
 from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 
+from fetal.regions import RegionPrep
 from fetal.transforms import AugConfig, preprocess
 
 
@@ -26,9 +27,10 @@ class FetalPlanesDataset(Dataset):
     """
 
     def __init__(self, meta: pd.DataFrame, raw_dir: str | Path, split_col: str, part: str,
-                 train: bool = False, size: int = 224, aug: AugConfig | None = None):
+                 train: bool = False, size: int = 224, aug: AugConfig | None = None,
+                 region: RegionPrep | None = None):
         self.df = meta[meta[split_col] == part].reset_index(drop=True)
-        self.raw_dir, self.train, self.size, self.aug = Path(raw_dir), train, size, aug
+        self.raw_dir, self.train, self.size, self.aug, self.region = Path(raw_dir), train, size, aug, region
 
     def __len__(self) -> int:
         return len(self.df)
@@ -36,6 +38,8 @@ class FetalPlanesDataset(Dataset):
     def __getitem__(self, i: int):
         row = self.df.iloc[i]
         img = Image.open(self.raw_dir / "Images" / f"{row.image}.png")
+        if self.region is not None:                 # кроп / маска интерфейса (варианты A1–A3), до letterbox
+            img = self.region(img, row)
         # не глобальный random: torch.manual_seed его не сидирует, и при num_workers=0
         # аугментации не воспроизводились бы
         rng = random.Random(int(torch.randint(2**62, ()))) if self.train else None
