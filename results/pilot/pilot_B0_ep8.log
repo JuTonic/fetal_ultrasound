@@ -1,0 +1,8 @@
+[B0 seed0] epoch 1/8  loss=0.749  val macro-F1=0.709  bal.acc=0.709  (117 img/s, 87 s)
+[B0 seed0] epoch 2/8  loss=0.311  val macro-F1=0.733  bal.acc=0.746  (140 img/s, 67 s)
+[B0 seed0] epoch 3/8  loss=0.236  val macro-F1=0.794  bal.acc=0.797  (140 img/s, 67 s)
+[B0 seed0] epoch 4/8  loss=0.177  val macro-F1=0.835  bal.acc=0.815  (140 img/s, 67 s)
+[B0 seed0] epoch 5/8  loss=0.119  val macro-F1=0.827  bal.acc=0.811  (139 img/s, 67 s)
+[B0 seed0] epoch 6/8  loss=0.073  val macro-F1=0.838  bal.acc=0.829  (139 img/s, 67 s)
+[B0 seed0] epoch 7/8  loss=0.049  val macro-F1=0.842  bal.acc=0.838  (140 img/s, 67 s)
+[B0 seed0] epoch 8/8  loss=0.039  val macro-F1=0.840  bal.acc=0.834  (136 img/s, 69 s)

@@ -107,7 +107,8 @@ def predict(model: nn.Module, loader, device: torch.device) -> np.ndarray:
 
 
 def run(cfg: dict, out_root: str | Path = "results/ablation", force: bool = False, limit_train: int | None = None,
-        limit_val: int | None = None, device: str = "auto", log=print) -> dict:
+        limit_val: int | None = None, device: str = "auto",
+        log=lambda *a: print(*a, flush=True)) -> dict:     # flush: иначе при записи в файл прогресс не виден
     out = Path(out_root) / cfg["variant"] / f"seed{cfg['seed']}"
     if (out / "metrics.json").exists() and not force:
         log(f"[{cfg['variant']} seed{cfg['seed']}] уже есть, пропускаю ({out})")
