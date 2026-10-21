@@ -85,6 +85,19 @@ def detect(img: Image.Image) -> dict:
                 hull=hull)
 
 
+def crop_loss(img: Image.Image, rec: dict) -> float:
+    """Доля суммарной (сглаженной) яркости кадра вне бокса кропа: сколько содержимого вырезал бы кроп A1.
+    0 — ничего, 0.05 — 5 % яркости. Объективная проверка вместо просмотра выборки глазами."""
+    img = img.convert("L")
+    w, h = img.size
+    s = np.asarray(img.resize((W, max(8, round(h * W / w))), Image.BILINEAR), dtype=np.float32)
+    g = ndi.gaussian_filter(s, 1.0)
+    H = g.shape[0]
+    x0, x1 = int(np.floor(rec["x0"] * W)), int(np.ceil(rec["x1"] * W))
+    y0, y1 = int(np.floor(rec["y0"] * H)), int(np.ceil(rec["y1"] * H))
+    return float(1.0 - g[y0:y1, x0:x1].sum() / max(g.sum(), 1e-6))
+
+
 def apply_region(img: Image.Image, rec: dict | None, mode: str) -> Image.Image:
     """img — градации серого 'L'. mode: full | crop | mask | crop_mask.
     crop: вырезать бокс сектора; mask: закрасить чёрным всё вне оболочки сектора; crop_mask: оба.

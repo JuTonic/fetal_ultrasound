@@ -67,12 +67,13 @@ def main() -> None:
     d["ui_mask_frac"] = [masks[fmt_key(a, b, c)].mean() if fmt_key(a, b, c) in masks else 0.0
                          for a, b, c in zip(d.machine, d.width, d.height)]
     d["box_area"] = (d.x1 - d.x0) * (d.y1 - d.y0)
+    d["fallback"] = (~d.sector_ok).astype(float)         # 1 у кадров без уверенного сектора (запасной вариант)
     tr, va = (d.split_grouped == "train").to_numpy(), (d.split_grouped == "val").to_numpy()
     res = {"chance_macro_f1_classes": round(float(1 / 9), 3), "chance_balanced_acc_machine_4": 0.25,
            "sector_ok_share": round(float(d.sector_ok.mean()), 4), "n_sector_not_ok": int((~d.sector_ok).sum()),
            "ui_mask_coverage_of_frames": round(float(d.has_ui_mask.mean()), 4),
            "box_is_whole_frame_share": round(float((d.box_area >= 0.95).mean()), 3), "class_from": {}, "machine_from": {}}
-    feats = {"aspect": ["aspect"], "width_height": ["width", "height"],
+    feats = {"fallback_flag": ["fallback"], "aspect": ["aspect"], "width_height": ["width", "height"],
              "sector_geometry": ["area", "x0", "y0", "x1", "y1", "aspect"],
              "ui_mask_flag_and_fraction": ["has_ui_mask", "ui_mask_frac"],
              "sector_geometry+aspect+ui_mask": ["area", "x0", "y0", "x1", "y1", "aspect", "has_ui_mask", "ui_mask_frac"]}

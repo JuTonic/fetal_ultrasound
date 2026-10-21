@@ -6,6 +6,10 @@
   "ui_mask_coverage_of_frames": 0.9791,
   "box_is_whole_frame_share": 0.894,
   "class_from": {
+    "fallback_flag": {
+      "macro_f1": 0.056,
+      "balanced_accuracy": 0.111
+    },
     "aspect": {
       "macro_f1": 0.207,
       "balanced_accuracy": 0.238
@@ -28,6 +32,10 @@
     }
   },
   "machine_from": {
+    "fallback_flag": {
+      "macro_f1": 0.162,
+      "balanced_accuracy": 0.25
+    },
     "aspect": {
       "macro_f1": 0.784,
       "balanced_accuracy": 0.785

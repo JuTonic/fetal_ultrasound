@@ -6,6 +6,7 @@
 
 Принципы: фиксированный seed; выбор — только по val (части test в этом файле нет вообще);
 последняя эпоха без выбора чекпоинта по val; прогон с готовым metrics.json пропускается (--force — заново).
+Веса по умолчанию не сохраняются (--save-weights или "save_weights": true в конфиге -> model.pt): у прогонов абляции их нет.
 """
 from __future__ import annotations
 
@@ -176,7 +177,9 @@ def run(cfg: dict, out_root: str | Path = "results/ablation", force: bool = Fals
         "python": platform.python_version(), "platform": platform.platform(), "git": git_state(),
         "limit_train": limit_train, "limit_val": limit_val, "total_seconds": time.perf_counter() - t_all,
         "note": "MPS не гарантирует побитовой воспроизводимости при том же seed"}, indent=2))
-    (out / "metrics.json").write_text(json.dumps(final, indent=2, ensure_ascii=False))
+    if cfg.get("save_weights"):                      # необязательно: ~45 МБ на прогон ResNet-18, в git не кладём (.gitignore)
+        torch.save(model.state_dict(), out / "model.pt")
+    (out / "metrics.json").write_text(json.dumps(final, indent=2, ensure_ascii=False))    # последним: признак «прогон завершён»
     return final
 
 
@@ -193,6 +196,7 @@ def main() -> None:
     ap.add_argument("--limit-val", type=int)
     ap.add_argument("--device", default="auto")
     ap.add_argument("--workers", type=int)
+    ap.add_argument("--save-weights", action="store_true", help="сохранить веса модели (model.pt) в папку прогона")
     args = ap.parse_args()
     names = list(json.loads(Path(args.config).read_text())["variants"]) if args.all else (args.variant or [])
     if not names:
@@ -204,6 +208,8 @@ def main() -> None:
                 ov["epochs"] = args.epochs
             if args.workers is not None:
                 ov["num_workers"] = args.workers
+            if args.save_weights:
+                ov["save_weights"] = True
             run(load_config(args.config, name, ov), args.out, args.force, args.limit_train, args.limit_val, args.device)
 
 

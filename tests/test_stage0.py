@@ -292,3 +292,35 @@ def test_class_imbalance_figure_and_table(tmp_path):
     assert png.read_bytes()[:4] == b"\x89PNG" and (tmp_path / "class_imbalance.csv").exists()
     assert t["всего"].is_monotonic_decreasing and t["всего"].sum() == len(meta) and t["доля, %"].sum() == pytest.approx(100, abs=0.5)
     assert t["во сколько раз реже самого частого"].iloc[0] == 1.0
+
+
+def test_region_fallback_skips_crop_but_applies_format_ui_mask():
+    """Документирует реализацию: fallback (sector_ok=False) отключает кроп и закраску вне оболочки, но не маску интерфейса формата."""
+    from fetal.overlay import fmt_key
+    im = _fan()
+    row = pd.Series({"image": "x", "machine": "M", "width": im.size[0], "height": im.size[1]})
+    ui = np.zeros((im.size[1], im.size[0]), bool); ui[:20, -60:] = True                      # маска формата: блок справа сверху
+    rec_bad = {**sector.detect(im), "ok": False}                                             # детектор не уверен
+    overlays = {fmt_key("M", *im.size): ui}
+    a1 = RegionPrep("crop", {"x": rec_bad}, None)(im, row)
+    assert a1.size == im.size and np.array_equal(np.asarray(a1), np.asarray(im.convert("L")))   # A1: как A0
+    a3 = RegionPrep("crop_ui", {"x": rec_bad}, overlays)(im, row)
+    assert a3.size == im.size                                                                 # кроп пропущен
+    assert np.asarray(a3)[:20, -60:].max() == 0 and np.asarray(im.convert("L"))[:20, -60:].max() > 0   # а маска интерфейса применена
+    ok = RegionPrep("crop_ui", {"x": sector.detect(im)}, overlays)(im, row)
+    assert ok.size != im.size                                                                 # при уверенном секторе кроп работает
+
+
+@needs_data
+def test_train_can_save_weights_and_default_does_not(tmp_path):
+    import torch
+    from fetal.train import build_model, load_config, run
+    ov = {"epochs": 1, "pretrained": False, "num_workers": 0, "size": 64, "batch_size": 16}
+    run(load_config(CONFIG, "B0", ov), tmp_path / "a", limit_train=48, limit_val=32, device="cpu", log=lambda *_: None)
+    assert not (tmp_path / "a" / "B0" / "seed0" / "model.pt").exists()                     # по умолчанию веса не пишутся
+    run(load_config(CONFIG, "B0", {**ov, "save_weights": True}), tmp_path / "b", limit_train=48, limit_val=32, device="cpu", log=lambda *_: None)
+    pt = tmp_path / "b" / "B0" / "seed0" / "model.pt"
+    assert pt.exists() and (tmp_path / "b" / "B0" / "seed0" / "metrics.json").exists()
+    net = build_model("resnet18", False)
+    net.load_state_dict(torch.load(pt, map_location="cpu"))                                  # веса загружаются в ту же архитектуру
+    assert net.eval()(torch.zeros(2, 3, 64, 64)).shape == (2, 9)
