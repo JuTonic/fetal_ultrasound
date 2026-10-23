@@ -2,7 +2,7 @@
 
 ## Objective
 
-We compared four image classifiers for recognizing nine maternal and fetal ultrasound plane labels. We asked which architecture offers useful classification quality and computational cost, whether ImageNet initialization helps, and how evaluation protocol affects the reported score. Plane recognition is not clinical diagnosis.
+We compared four image classifiers for recognizing nine maternal and fetal ultrasound plane labels. We asked which architecture offers useful classification quality and computational cost, whether ImageNet initialization helps, and how evaluation protocol affects the reported score.
 
 ## Data and methods
 

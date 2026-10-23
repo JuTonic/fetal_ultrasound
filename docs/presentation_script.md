@@ -6,7 +6,7 @@ Use this as a talk track, not text to read word for word. The first 16 slides ar
 
 ### Slide 1 — Title
 
-“We benchmarked four neural network architectures for classifying standard fetal ultrasound planes. The practical question is which model is a good starting point when we care about classification quality, the value of ImageNet pretraining, and computation. This is plane recognition, not diagnosis.” Introduce the three team members and their roles if needed.
+“We benchmarked four neural network architectures for classifying standard fetal ultrasound planes. The practical question is which model is a good starting point when we care about classification quality, the value of ImageNet pretraining, and computation.” Introduce the three team members and their roles if needed.
 
 ### Slide 2 — Task and research question
 

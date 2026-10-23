@@ -1,6 +1,6 @@
 # Fetal ultrasound plane classification
 
-NeuroML course project. We classify fetal ultrasound frames into nine plane labels and compare ResNet-50, DenseNet-121, ConvNeXt-Tiny, and Swin-T. This is **plane recognition**, not fetal diagnosis.
+NeuroML course project. We classify fetal ultrasound frames into nine plane labels and compare ResNet-50, DenseNet-121, ConvNeXt-Tiny, and Swin-T.
 
 ## Submission links
 
