@@ -19,3 +19,4 @@ __pycache__/
 /dist/
 /results/distributed/
 /results/distributed-launch.*
+/final_artifacts/
