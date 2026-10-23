@@ -1,0 +1,12 @@
+run,model,split,initialization,seed,epochs,selected_epoch,val_macro_f1,test_macro_f1,test_balanced_accuracy,test_accuracy,status
+resnet50-split_grouped-imagenet-seed0,resnet50,split_grouped,ImageNet,0,20,7,0.8719071032305136,0.8375402457620658,0.8393228024313104,0.9139966273187183,completed
+densenet121-split_grouped-imagenet-seed0,densenet121,split_grouped,ImageNet,0,20,5,0.8581051524928454,0.8514733604640158,0.8497906599522173,0.9139966273187183,completed
+convnext_tiny-split_grouped-imagenet-seed0,convnext_tiny,split_grouped,ImageNet,0,20,8,0.8529051258420455,0.8414677806768505,0.8388710018555936,0.9151208544125914,completed
+swin_t-split_grouped-imagenet-seed0,swin_t,split_grouped,ImageNet,0,20,10,0.8449648966518861,0.8193395521898759,0.8138909511221049,0.9094997189432266,completed
+resnet50-split_official-imagenet-seed0,resnet50,split_official,ImageNet,0,6,3,0.8125213923749905,0.7740324789529982,0.7895410729414898,0.8635932460633656,completed
+resnet50-split_grouped-imagenet-seed1,resnet50,split_grouped,ImageNet,1,20,7,0.8562874065398467,0.8447401022909184,0.8480737110178015,0.9117481731309725,completed
+resnet50-split_grouped-scratch-seed0,resnet50,split_grouped,scratch,0,20,17,0.8162916192206908,0.7990481616563847,0.8050614749627756,0.8864530635188308,completed
+resnet50-split_grouped-scratch-seed1,resnet50,split_grouped,scratch,1,20,19,0.8154401829158223,0.8060941337816234,0.8039393347525264,0.8982574480044969,completed
+densenet121-split_grouped-imagenet-seed1,densenet121,split_grouped,ImageNet,1,20,14,0.8584332182731408,0.8524480619727879,0.853059900082937,0.9156829679595279,completed
+densenet121-split_grouped-scratch-seed0,densenet121,split_grouped,scratch,0,20,16,0.8175468646733941,0.8273570284379363,0.8236080063754699,0.897133220910624,completed
+densenet121-split_grouped-scratch-seed1,densenet121,split_grouped,scratch,1,20,19,0.808489085111516,0.7972625035514702,0.7957416656740978,0.8920741989881956,completed

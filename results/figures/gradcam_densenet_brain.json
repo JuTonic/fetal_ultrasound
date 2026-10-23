@@ -1,0 +1,26 @@
+{
+  "checkpoint": "results/distributed/580564cc8439644b8c81/densenet121-split_grouped-imagenet-seed0-to20/model.pt",
+  "checkpoint_sha256": "149f8e481f7a464b4089005fa5c4fa85197dd80c134e444703ec509490beeea7",
+  "target_layer": "features.norm5",
+  "target": "predicted-class logit",
+  "examples": [
+    {
+      "image": "Patient01032_Plane3_1_of_3",
+      "label": 2,
+      "prediction": 2,
+      "partition": "test"
+    },
+    {
+      "image": "Patient00688_Plane3_1_of_1",
+      "label": 7,
+      "prediction": 2,
+      "partition": "test"
+    },
+    {
+      "image": "Patient01568_Plane3_1_of_2",
+      "label": 8,
+      "prediction": 2,
+      "partition": "test"
+    }
+  ]
+}

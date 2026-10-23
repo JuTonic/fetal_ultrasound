@@ -1,0 +1,44 @@
+{
+  "architectures": [
+    "resnet50",
+    "densenet121",
+    "convnext_tiny",
+    "swin_t"
+  ],
+  "training": {
+    "epochs": 6,
+    "batch_size": 8,
+    "num_workers": 4,
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "precision": "fp32"
+  },
+  "finalist_seeds": [
+    0,
+    1
+  ],
+  "team_model": {
+    "enabled": false,
+    "architecture": null,
+    "checkpoint": null,
+    "download_url": null
+  },
+  "note": "Limited optimization budget; use a separate smoke/pilot run to set epochs before the scientific run.",
+  "cluster": {
+    "workers": [
+      {
+        "host": "kr54-pc",
+        "directory": "/srv/neuroml/project",
+        "speed": "fast",
+        "storage_mount": "/srv/neuroml"
+      },
+      {
+        "host": "maibenben",
+        "directory": "/home/semyon/neuroml",
+        "speed": "small"
+      }
+    ],
+    "profiling_host": "kr54-pc",
+    "image": "neuroml-pipeline:distributed"
+  }
+}

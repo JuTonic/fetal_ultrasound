@@ -1,0 +1,26 @@
+{
+  "run_id": "densenet121-split_grouped-imagenet-seed0",
+  "run_id_source": "29abc2ac41ab1132d38e",
+  "model": "densenet121",
+  "split": "split_grouped",
+  "seed": 0,
+  "initialization": "DenseNet121_Weights.IMAGENET1K_V1",
+  "training": {
+    "epochs": 6,
+    "batch_size": 8,
+    "num_workers": 4,
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "precision": "fp32"
+  },
+  "total_epochs": 20,
+  "selected_epoch": 5,
+  "preprocessing": "B0-gray-letterbox224-moderate-no-flip-imagenet-v1",
+  "selection_policy": "best validation macro-F1; earlier epoch breaks ties",
+  "hardware": "NVIDIA GeForce RTX 3080 Ti",
+  "dataset_hashes": {
+    "metadata_sha256": "4277f196585e170c63a1d0e1d963432ea6084ae376a7c633eda2d53868d44f63",
+    "splits_sha256": "1d737a5b9bb61ad4e563acf5976a056364398c3c8636d3b6ab66aa38f5f437fd",
+    "subsets_sha256": "28d0ff286f97f87fea77a40131f47a5d1890cf74d0a4f1224767a850f92c2fa7"
+  }
+}

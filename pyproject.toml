@@ -1,0 +1,58 @@
+[project]
+name = "neuroml-fetal-planes"
+version = "0.1.0"
+description = "Reproducible fetal ultrasound plane classification benchmark"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "numpy==2.1.3",
+    "pandas==2.2.3",
+    "pillow==11.0.0",
+    "scikit-learn==1.8.0",
+    "scipy==1.15.3",
+    "matplotlib==3.9.2",
+    "fvcore==0.1.5.post20221221",
+    "pydantic==2.12.3",
+    "pydantic-settings==2.11.0",
+]
+
+[project.optional-dependencies]
+cpu = ["torch==2.5.1", "torchvision==0.20.1"]
+cuda = ["torch==2.5.1", "torchvision==0.20.1"]
+
+[dependency-groups]
+dev = ["pytest==8.3.4"]
+
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fetal"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.uv]
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+conflicts = [[{ extra = "cpu" }, { extra = "cuda" }]]
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", extra = "cpu" },
+    { index = "pytorch-cu124", extra = "cuda" },
+]
+torchvision = [
+    { index = "pytorch-cpu", extra = "cpu" },
+    { index = "pytorch-cu124", extra = "cuda" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true

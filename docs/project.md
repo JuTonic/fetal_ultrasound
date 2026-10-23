@@ -1,0 +1,10 @@
+"Deep learning is widely used for automatic recognition of standard fetal ultrasound planes, but model performance depends strongly on architecture, transfer learning, data splitting, and class imbalance. This project reproduces and extends the benchmarking methodology of Burgos-Artizzu et al., 2020 using the FETAL_PLANES_DB dataset (~12.4k images, ~1.8k patients).
+
+The goal is to classify 9 maternal-fetal ultrasound planes and answer a practical question: which representative architecture is the best starting point for a fetal ultrasound project, considering accuracy, transfer learning benefit, and computational cost?
+
+a) Download and inspect the dataset: analyze labels, class imbalance, patient structure, and unusual images. Build train/val/test splits grouped by patient and verify zero patient leakage. Use one fixed preprocessing pipeline for all experiments: convert all images to grayscale, replicate to 3 channels, preserve aspect ratio, and apply moderate ultrasound-compatible augmentations.
+b) Build a unified training/evaluation pipeline. Screen ≥4 architectures from ≥3 families (e.g., ResNet-50, DenseNet-121, ConvNeXt-Tiny, ViT-S/Swin-T) using ImageNet-pretrained weights and one random seed. Report macro-F1, balanced accuracy, per-class F1, confusion matrices, #parameters/FLOPs and inference latency.
+c) Select 2 finalists and compare ImageNet-pretrained vs. training from scratch using ≥2 seeds. Report mean ± std and quantify the benefit of pretraining. Analyze major errors, especially confusion between fetal brain sub-planes and the heterogeneous Other class.
+d) For one reference model, compare the patient-grouped protocol with the split supplied with the dataset and, optionally, a naive image-level random split. Determine whether the evaluation protocol changes the estimated performance.
+e*) Data efficiency: retrain the finalists on 25/50/100% of the training patients and plot performance vs. dataset size.
+f*) Extensions: robustness by operator/ultrasound machine, corruption tests, Grad-CAM, or linear-probe vs. full fine-tuning."
